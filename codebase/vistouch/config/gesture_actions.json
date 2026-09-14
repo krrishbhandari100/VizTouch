@@ -1,0 +1,8 @@
+{
+  "Open_Palm": "move_cursor",
+  "Closed_Fist": "left_click",
+  "Pinch": "right_click",
+  "Victory": "scroll_mode",
+  "Thumb_Up": "volume_up",
+  "Thumb_Down": "volume_down"
+}
