@@ -1,2 +1,7 @@
 opencode.txt
 venv/
+codebase/*/__pycache__
+codebase/*/__init__.py
+VizTouch_Review_II.pptx
+VizTouch_Review_II_2.pptx
+codeflow-1790098905639.pdf

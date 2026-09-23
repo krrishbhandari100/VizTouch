@@ -4,7 +4,7 @@ from collections import deque
 class MotionDetector:
     """
     Detects predefined motion gestures from landmark sequences.
-    Currently supports: swipe_left, swipe_right, swipe_up, swipe_down
+    Currently supports: swipe_up, swipe_down
     Requires three fingers to be extended for detection to avoid false positives.
     """
     def __init__(self, buffer_size=10, swipe_threshold=0.15, min_velocity=0.02):
@@ -20,7 +20,7 @@ class MotionDetector:
         """
         Update detector with new landmarks.
         Returns: (motion_type, confidence) or (None, 0.0)
-        motion_type: 'swipe_left', 'swipe_right', 'swipe_up', 'swipe_down', or None
+        motion_type: 'swipe_up', 'swipe_down', or None
         """
         if not landmarks:
             self.landmark_buffer.clear()
@@ -50,27 +50,16 @@ class MotionDetector:
             return None, 0.0
             
         # Calculate displacement and velocity
-        dx = valid_frames[-1][0] - valid_frames[0][0]
         dy = valid_frames[-1][1] - valid_frames[0][1]
         dt = len(valid_frames)  # number of frames
         
-        vx = dx / dt if dt > 0 else 0
         vy = dy / dt if dt > 0 else 0
         
-        # Check for swipe
+        # Check for vertical swipe
         motion = None
         confidence = 0.0
         
-        # Horizontal swipe
-        if abs(vx) > self.min_velocity and abs(dx) > self.swipe_threshold:
-            if dx < 0:  # Swipe left (moving left in camera view = right on screen?)
-                motion = 'swipe_left'
-                confidence = min(abs(dx) / (self.swipe_threshold * 2), 1.0)
-            else:  # Swipe right
-                motion = 'swipe_right'
-                confidence = min(abs(dx) / (self.swipe_threshold * 2), 1.0)
-        # Vertical swipe
-        elif abs(vy) > self.min_velocity and abs(dy) > self.swipe_threshold:
+        if abs(vy) > self.min_velocity and abs(dy) > self.swipe_threshold:
             if dy < 0:  # Swipe up (moving up in camera view)
                 motion = 'swipe_up'
                 confidence = min(abs(dy) / (self.swipe_threshold * 2), 1.0)
@@ -78,7 +67,7 @@ class MotionDetector:
                 motion = 'swipe_down'
                 confidence = min(abs(dy) / (self.swipe_threshold * 2), 1.0)
                 
-        return motion, confidence if motion else (None, 0.0)
+        return (motion, confidence) if motion else (None, 0.0)
     
     def _count_extended_fingers(self, landmarks):
         """Count number of extended fingers (0-5)"""
